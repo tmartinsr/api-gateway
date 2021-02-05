@@ -1,9 +1,12 @@
 server:
-  port: 8888
+  port: 8080
 
 spring:
     cloud:
         gateway:
+            actuator:
+              verbose:
+                enabled: false
             routes:
             - id: api_route
               uri: http://httpbin.org
@@ -12,14 +15,23 @@ spring:
               - Path=/get
               filters:
               - name: BearerTokenExchange
-                args:
-                  scope: test
+#                args:
+#                  scope: test
 #                  authServerBaseUrl: http://httpbin2.org
 #                  tokenEndpointUrl: /get
 #                  clientId: ${bearer-token-exchange.client-id}
 #                  clientSecret: ${bearer-token-exchange.client-secret}
 #                  issuerContainerType: ${bearer-token-exchange.issuer-container-type}
 #                  issuerContainerName: ${bearer-token-exchange.issuer-container-named}
+
+management:
+  endpoint:
+    features:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: gateway
 
 logging:
   level:
@@ -37,6 +49,5 @@ bearer-token-exchange:
   client-secret: 214c1a56-f229-45e7-b932-021fe6f53922
   issuer-container-type: header
   issuer-container-named: X-TOKEN-SUBJECT-ISSUER
-
 
             

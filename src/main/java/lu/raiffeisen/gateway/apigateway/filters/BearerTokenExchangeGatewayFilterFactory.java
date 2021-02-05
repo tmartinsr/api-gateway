@@ -29,6 +29,7 @@ public class BearerTokenExchangeGatewayFilterFactory
 
     public static String GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange";
     public static String REQUESTED_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:access_token";
+    public static String ISSUER_CONTAINER_TYPE_BY_VALUE = "value";
     public static String ISSUER_CONTAINER_TYPE_HEADER = "header";
     
 	@Value("${bearer-token-exchange.auth-server-url}")
@@ -62,6 +63,8 @@ public class BearerTokenExchangeGatewayFilterFactory
 
     private String getSubjectIssuer(ServerWebExchange exchange, Config config) {
     	String issConType = (config.getIssuerContainerType() != null ? config.getIssuerContainerType() : this.issuerContainerType);
+        if (issConType.toLowerCase().trim().equals(BearerTokenExchangeGatewayFilterFactory.ISSUER_CONTAINER_TYPE_BY_VALUE))
+        	return (config.getIssuerContainerName() != null ? config.getIssuerContainerName() : this.issuerContainerName);
         if (issConType.toLowerCase().trim().equals(BearerTokenExchangeGatewayFilterFactory.ISSUER_CONTAINER_TYPE_HEADER))
             return this.getSubjectIssuerByHeader(exchange, (config.getIssuerContainerName() != null ? config.getIssuerContainerName() : this.issuerContainerName));
         return null;
@@ -90,7 +93,8 @@ public class BearerTokenExchangeGatewayFilterFactory
             formData.add("requested_token_type", BearerTokenExchangeGatewayFilterFactory.REQUESTED_TOKEN_TYPE);
             formData.add("subject_token", bearerToken);
             formData.add("subject_issuer", getSubjectIssuer(exchange, config));
-            formData.add("scope", config.getScope());
+            if (config.getScope() != null)
+            	formData.add("scope", config.getScope());
 
             return WebClient.create().post()
                 .uri((config.getAuthServerBaseUrl() != null ? config.getAuthServerBaseUrl() : this.authServerBaseUrl) + (config.getTokenEndpointUrl() != null ? config.getTokenEndpointUrl() : this.tokenEndpointUrl))
