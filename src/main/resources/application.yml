@@ -25,13 +25,20 @@ spring:
 #                  issuerContainerName: ${bearer-token-exchange.issuer-container-named}
 
 management:
+  server:
+    port: 8081
   endpoint:
-    features:
+    gateway:
+      enabled: true
+  health:
+    probes:
+      enabled: true
+    refresh:
       enabled: true
   endpoints:
     web:
       exposure:
-        include: gateway
+        include: health,gateway
 
 logging:
   level:
