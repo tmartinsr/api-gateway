@@ -61,16 +61,16 @@ public class BearerTokenExchangeGatewayFilterFactory
         return response.setComplete();
     }
 
-    private String getSubjectIssuer(ServerWebExchange exchange, Config config) {
+    private String getRequestedIssuer(ServerWebExchange exchange, Config config) {
     	String issConType = (config.getIssuerContainerType() != null ? config.getIssuerContainerType() : this.issuerContainerType);
         if (issConType.toLowerCase().trim().equals(BearerTokenExchangeGatewayFilterFactory.ISSUER_CONTAINER_TYPE_BY_VALUE))
         	return (config.getIssuerContainerName() != null ? config.getIssuerContainerName() : this.issuerContainerName);
         if (issConType.toLowerCase().trim().equals(BearerTokenExchangeGatewayFilterFactory.ISSUER_CONTAINER_TYPE_HEADER))
-            return this.getSubjectIssuerByHeader(exchange, (config.getIssuerContainerName() != null ? config.getIssuerContainerName() : this.issuerContainerName));
+            return this.getRequestedIssuerByHeader(exchange, (config.getIssuerContainerName() != null ? config.getIssuerContainerName() : this.issuerContainerName));
         return null;
     }
 
-    private String getSubjectIssuerByHeader(ServerWebExchange exchange, String headerName) {
+    private String getRequestedIssuerByHeader(ServerWebExchange exchange, String headerName) {
         return exchange.getRequest().getHeaders().getFirst(headerName);
     }
 
@@ -92,7 +92,7 @@ public class BearerTokenExchangeGatewayFilterFactory
             formData.add("grant_type", BearerTokenExchangeGatewayFilterFactory.GRANT_TYPE);
             formData.add("requested_token_type", BearerTokenExchangeGatewayFilterFactory.REQUESTED_TOKEN_TYPE);
             formData.add("subject_token", bearerToken);
-            formData.add("subject_issuer", getSubjectIssuer(exchange, config));
+            formData.add("requested_issuer", getRequestedIssuer(exchange, config));
             if (config.getScope() != null)
             	formData.add("scope", config.getScope());
 
