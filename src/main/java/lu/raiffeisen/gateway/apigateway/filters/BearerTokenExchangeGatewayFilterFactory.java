@@ -29,6 +29,7 @@ public class BearerTokenExchangeGatewayFilterFactory
 
     public static String GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange";
     public static String REQUESTED_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:access_token";
+    public static String ISSUER_CONTAINER_TYPE_NONE = "none";
     public static String ISSUER_CONTAINER_TYPE_BY_VALUE = "value";
     public static String ISSUER_CONTAINER_TYPE_HEADER = "header";
     
@@ -63,6 +64,8 @@ public class BearerTokenExchangeGatewayFilterFactory
 
     private String getSubjectIssuer(ServerWebExchange exchange, Config config) {
     	String issConType = (config.getIssuerContainerType() != null ? config.getIssuerContainerType() : this.issuerContainerType);
+    	if (issConType.toLowerCase().trim().equals(BearerTokenExchangeGatewayFilterFactory.ISSUER_CONTAINER_TYPE_NONE))
+    		return null;
         if (issConType.toLowerCase().trim().equals(BearerTokenExchangeGatewayFilterFactory.ISSUER_CONTAINER_TYPE_BY_VALUE))
         	return (config.getIssuerContainerName() != null ? config.getIssuerContainerName() : this.issuerContainerName);
         if (issConType.toLowerCase().trim().equals(BearerTokenExchangeGatewayFilterFactory.ISSUER_CONTAINER_TYPE_HEADER))
@@ -92,7 +95,11 @@ public class BearerTokenExchangeGatewayFilterFactory
             formData.add("grant_type", BearerTokenExchangeGatewayFilterFactory.GRANT_TYPE);
             formData.add("requested_token_type", BearerTokenExchangeGatewayFilterFactory.REQUESTED_TOKEN_TYPE);
             formData.add("subject_token", bearerToken);
-            formData.add("subject_issuer", getSubjectIssuer(exchange, config));
+            String subjectIssuer = getSubjectIssuer(exchange, config);
+            if (subjectIssuer != null)
+            	formData.add("subject_issuer", subjectIssuer);
+            if (config.getAudience() != null)
+            	formData.add("audience", config.getAudience());
             if (config.getScope() != null)
             	formData.add("scope", config.getScope());
 
@@ -129,8 +136,17 @@ public class BearerTokenExchangeGatewayFilterFactory
         private String issuerContainerType;
         private String issuerContainerName;
         private String scope;
+        private String audience;
 
-        public String getScope() {
+        public String getAudience() {
+			return audience;
+		}
+
+		public void setAudience(String audience) {
+			this.audience = audience;
+		}
+
+		public String getScope() {
 			return scope;
 		}
 
@@ -190,7 +206,7 @@ public class BearerTokenExchangeGatewayFilterFactory
 
     @Override
     public List<String> shortcutFieldOrder() {
-        return Arrays.asList("scope", "authServerBaseUrl", "tokenEndpointUrl", "clientId", "clientSecret", "issuerContainerType", "issuerContainerName");
+        return Arrays.asList("authServerBaseUrl", "tokenEndpointUrl", "clientId", "clientSecret", "issuerContainerType", "issuerContainerName", "audience", "scope");
     }
     
 }

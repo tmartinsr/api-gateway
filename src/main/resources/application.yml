@@ -16,13 +16,14 @@ spring:
               filters:
               - name: BearerTokenExchange
 #                args:
-#                  scope: test
 #                  authServerBaseUrl: http://httpbin2.org
 #                  tokenEndpointUrl: /get
 #                  clientId: ${bearer-token-exchange.client-id}
 #                  clientSecret: ${bearer-token-exchange.client-secret}
 #                  issuerContainerType: ${bearer-token-exchange.issuer-container-type}
 #                  issuerContainerName: ${bearer-token-exchange.issuer-container-named}
+#                  audience: test
+#                  scope: test
 
 management:
   server:
