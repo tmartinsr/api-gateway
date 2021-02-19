@@ -1,0 +1,12 @@
+hazelcast:
+  network:
+    join:
+      multicast:
+        enabled: true
+      kubernetes:
+        enabled: false
+        service-dns: SERVICE-NAME.NAMESPACE.svc.cluster.local
+  map:
+    default:
+      time-to-live-seconds: 10
+      max-idle-seconds: 0

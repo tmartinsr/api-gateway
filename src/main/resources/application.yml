@@ -15,15 +15,15 @@ spring:
               - Path=/get
               filters:
               - name: BearerTokenExchange
-#                args:
-#                  authServerBaseUrl: http://httpbin2.org
-#                  tokenEndpointUrl: /get
-#                  clientId: ${bearer-token-exchange.client-id}
-#                  clientSecret: ${bearer-token-exchange.client-secret}
-#                  issuerContainerType: ${bearer-token-exchange.issuer-container-type}
-#                  issuerContainerName: ${bearer-token-exchange.issuer-container-named}
-#                  audience: test
-#                  scope: test
+                args:
+                  authServerBaseUrl: http://mockbin.org
+                  tokenEndpointUrl: /echo
+                  clientId: ${bearer-token-exchange.client-id}
+                  clientSecret: ${bearer-token-exchange.client-secret}
+                  issuerContainerType: ${bearer-token-exchange.issuer-container-type}
+                  issuerContainerName: ${bearer-token-exchange.issuer-container-named}
+                  audience: test
+                  scope: test
 
 management:
   server:
@@ -43,12 +43,13 @@ management:
 
 logging:
   level:
-    org.springframework.cloud.gateway: TRACE
-    org.springframework.http.server.reactive: TRACE
-    org.springframework.web.reactive: TRACE
-    reactor.ipc.netty: TRACE
-    reactor.netty: TRACE
-    reactor.netty.http.client: TRACE
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.ipc.netty: DEBUG
+    reactor.netty: DEBUG
+    reactor.netty.http.client: DEBUG
+    lu.raiffeisen.gateway.apigateway.filters: DEBUG
 
 bearer-token-exchange:
   auth-server-url: http://httpbin.org
@@ -57,5 +58,7 @@ bearer-token-exchange:
   client-secret: 214c1a56-f229-45e7-b932-021fe6f53922
   issuer-container-type: header
   issuer-container-named: X-TOKEN-SUBJECT-ISSUER
+  audience: test
+  scope: test
 
             
